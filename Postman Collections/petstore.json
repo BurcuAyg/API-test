@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "4da0d410-7639-4176-996a-b59233b09de2",
+		"name": "PetStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const userName = pm.variables.replaceIn(\"{{$randomUserName}}\")\r",
+							"const firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"const lastName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+							"const password = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+							"const phone = pm.variables.replaceIn(\"{{$randomPhoneNumber}}\")\r",
+							"\r",
+							"pm.environment.set(\"userName\", userName)\r",
+							"pm.environment.set(\"firstName\", firstName)\r",
+							"pm.environment.set(\"lastName\", lastName)\r",
+							"pm.environment.set(\"password\", password)\r",
+							"pm.environment.set(\"phone\", phone)\r",
+							"pm.environment.set(\"email\", `${userName}@gmail.com`)"
+						],
+						"type": "text/javascript",
+						"id": "8b1ddcb3-ba89-4125-baf4-c055c6ec2068"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"id": "9fd4ef29-001c-4079-b1d0-49a3b341a0a2"
+					}
+				}
+			],
+			"_postman_id": "175bca44-36fd-4fce-bc48-8ad2bfc7147d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 0,\r\n    \"username\": \"{{userName}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"userStatus\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://petstore.swagger.io/v2/user"
+			},
+			"response": []
+		},
+		{
+			"name": "Get user by username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonResponse = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - username valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.username).to.be.a(\"string\").to.equal(pm.environment.get(\"userName\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - firstName valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.firstName).to.be.a(\"string\").to.equal(pm.environment.get(\"firstName\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - lastName valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.lastName).to.be.a(\"string\").to.equal(pm.environment.get(\"lastName\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - email valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.email).to.be.a(\"string\").to.equal(pm.environment.get(\"email\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - password valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.password).to.be.a(\"string\").to.equal(pm.environment.get(\"password\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - phone valid data type and value of the response\", () => { \r",
+							"    pm.expect(jsonResponse.phone).to.be.a(\"string\").to.equal(pm.environment.get(\"phone\"))\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"id": "a42d3455-7fa3-4443-aff2-c26457b54d35"
+					}
+				}
+			],
+			"_postman_id": "455f5374-2263-4d64-b2ce-589dadfd221f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://petstore.swagger.io/v2/user/{{userName}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Logs user into the system",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonResponse = pm.response.json()\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Test - logged in user session\", function () {\r",
+							"   pm.expect(jsonResponse.message).to.include(pm.environment.get(\"message\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"id": "fab24a1d-bf3f-49bd-b7f4-abdc4479216f"
+					}
+				}
+			],
+			"_postman_id": "ffdb7abf-4f4b-42b0-8bdd-6e15101f40c1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/user/login?username={{userName}}&password={{password}}",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"user",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "{{userName}}"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (only username)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const userName = pm.variables.replaceIn(\"{{$randomUserName}}\")\r",
+							"\r",
+							"pm.environment.set(\"userName\", userName)\r",
+							""
+						],
+						"type": "text/javascript",
+						"id": "f554d11a-1ad3-4f6f-affc-619591b49414"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"id": "3ee3d80b-d366-4fe6-baf5-f3eba18b0374"
+					}
+				}
+			],
+			"_postman_id": "457c0fc9-d46a-4a48-9cbf-74adc7c7d0bd",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 0,\r\n    \"username\": \"{{userName}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"userStatus\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://petstore.swagger.io/v2/user/{{userName}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Returns pet inventories by status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonResponse = pm.response.json()\r",
+							"\r",
+							"pm.environment.set(\"pending\", jsonResponse.pending)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"id": "94497382-8a3e-4c44-a8ec-7f0a2ea7c709"
+					}
+				}
+			],
+			"_postman_id": "078356a6-4d32-4c31-bc32-05c16f177e1a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://petstore.swagger.io/v2/store/inventory"
+			},
+			"response": []
+		},
+		{
+			"name": "Finds Pets by status (only pending)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonResponse = pm.response.json()\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.expect(pm.response.status).to.be.eq(\"OK\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json')\r",
+							"})\r",
+							"\r",
+							"pm.test('Number of pendings = ' + jsonResponse.length, function () {\r",
+							"    pm.expect(jsonResponse.length).to.equal(pm.environment.get(\"pending\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"id": "5a5b2616-904e-4942-947c-43f310108146"
+					}
+				}
+			],
+			"_postman_id": "f77a74d0-270f-4bff-a9a1-a5266b6ddb41",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=pending",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
